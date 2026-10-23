@@ -1,0 +1,36 @@
+{
+  "cli": {
+    "version": ">= 16.8.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:assembleRelease",
+        "withoutCredentials": false
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+            },
+      "env": {
+        "API_BASE_URL": "https://portal.logistiqinnovations.ca/api/v1",
+        "SOCKET_URL": "https://portal.logistiqinnovations.ca",
+        "NODE_ENV": "production",
+        "DB_NAME": "blackriver",
+        "GOOGLE_MAPS_API_KEY": "AIzaSyDBhzYegComYfj8I4K2Di_ltSLk7ify_IU"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

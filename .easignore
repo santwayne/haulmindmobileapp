@@ -1,0 +1,24 @@
+# EAS Build ignore file
+# Files to exclude from EAS builds
+
+# Don't ignore .env - it's needed for the build
+!.env
+
+# Ignore other env files
+.env*.local
+.env.development
+.env.staging
+.env.production
+
+# Ignore documentation
+*.md
+!README.md
+
+# Ignore scripts
+scripts/
+
+# Ignore test files
+**/__tests__/
+**/*.test.*
+**/*.spec.*
+

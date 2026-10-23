@@ -1,0 +1,123 @@
+{
+  "expo": {
+    "name": "Logistiq Innovations",
+    "slug": "black-river-logistics",
+    "version": "1.0.5",
+    "orientation": "portrait",
+    "icon": "./assets/app-icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/app-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "scheme": "com.logistiqinnovations.app",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.logistiqinnovations.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show your current position on the map.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs access to your location for live tracking of your trips.",
+        "NSLocationAlwaysUsageDescription": "This app needs access to your location for live tracking of your trips.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photos to upload document images.",
+        "NSCameraUsageDescription": "This app needs access to your camera to take photos of documents.",
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": ["location", "remote-notification", "fetch"],
+        "NSMicrophoneUsageDescription": "Required for voice calls"
+      },
+      "entitlements": {
+        "aps-environment": "production"
+      },
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "android": {
+      "package": "com.logistiqinnovations.app",
+      "versionCode": 1,
+      "config": {
+        "googleMapsApiKey": "AIzaSyDBhzYegComYfj8I4K2Di_ltSLk7ify_IU"
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/app-icon.png",
+        "backgroundColor": "#E5E5E5"
+      },
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#FFFFFF"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "RECORD_AUDIO"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "com.logistiqinnovations.app"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "plugins": [
+      "expo-font",
+     
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 24,
+            "targetSdkVersion": 34,
+            "compileSdkVersion": 34,
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/app-icon.png",
+          "color": "#8B5CF6",
+          "defaultChannel": "logistiq-default",
+          "sounds": []
+        }
+      ]
+    ],
+    "web": {
+      "favicon": "./assets/app-icon.png",
+      "bundler": "metro",
+      "title": "Logistiq Innovations - Driver App",
+      "description": "Driver Mobile App for Logistiq Innovations"
+    },
+    "extra": {
+      "apiBaseUrl": "https://portal.logistiqinnovations.ca/api/v1",
+      "socketUrl": "https://portal.logistiqinnovations.ca",
+      "googleMapsApiKey": "AIzaSyCv8vuE1jOgt-F6Szqvfn1DPrQdbPn5aEI",
+      "eas": {
+        "projectId": "fefcce40-3b76-4b8d-b7c8-c74644f42676"
+      }
+    },
+    "owner": "royaltally"
+  }
+}

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Connection Test</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .config {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .config label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .config input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .config input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .status {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            display: block;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            display: block;
+        }
+        .status.testing {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+            display: block;
+        }
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-left: 3px solid transparent;
+            padding-left: 10px;
+        }
+        .log-entry.success {
+            border-left-color: #4caf50;
+            color: #81c784;
+        }
+        .log-entry.error {
+            border-left-color: #f44336;
+            color: #e57373;
+        }
+        .log-entry.info {
+            border-left-color: #2196f3;
+            color: #64b5f6;
+        }
+        .log-entry.warning {
+            border-left-color: #ff9800;
+            color: #ffb74d;
+        }
+        .clear-btn {
+            background: #6c757d;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Socket.IO Connection Test</h1>
+        <p class="subtitle">Test your socket connection to the server</p>
+        
+        <div class="config">
+            <label for="socketUrl">Socket URL:</label>
+            <input type="text" id="socketUrl" value="https://portal.logistiqinnovations.ca" placeholder="https://your-server.com">
+            
+            <label for="socketPath">Socket Path:</label>
+            <input type="text" id="socketPath" value="/socket.io/" placeholder="/socket.io/">
+        </div>
+        
+        <button id="testBtn" onclick="testSocket()">🚀 Test Socket Connection</button>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Connection Status</div>
+                <div class="stat-value" id="connStatus">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Socket ID</div>
+                <div class="stat-value" id="socketId" style="font-size: 14px;">-</div>
+            </div>
+        </div>
+        
+        <div class="log-container" id="logContainer">
+            <div class="log-entry info">Ready to test socket connection...</div>
+        </div>
+        
+        <button class="clear-btn" onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <script>
+        let socket = null;
+        let startTime = null;
+
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('logContainer').innerHTML = '';
+            addLog('Logs cleared', 'info');
+        }
+
+        function updateStatus(message, type) {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.textContent = message;
+        }
+
+        function updateStats(connected, socketId) {
+            document.getElementById('connStatus').textContent = connected ? '✅ Connected' : '❌ Disconnected';
+            document.getElementById('socketId').textContent = socketId || '-';
+        }
+
+        function testSocket() {
+            const socketUrl = document.getElementById('socketUrl').value.trim();
+            const socketPath = document.getElementById('socketPath').value.trim();
+            const testBtn = document.getElementById('testBtn');
+            
+            // Disable button
+            testBtn.disabled = true;
+            testBtn.textContent = '🔄 Testing...';
+            
+            // Clear previous connection
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+            }
+            
+            // Clear logs
+            clearLogs();
+            updateStats(false, null);
+            
+            addLog(`Starting socket connection test...`, 'info');
+            addLog(`URL: ${socketUrl}`, 'info');
+            addLog(`Path: ${socketPath}`, 'info');
+            
+            updateStatus('🔄 Testing connection...', 'testing');
+            startTime = Date.now();
+            
+            try {
+                socket = io(socketUrl, {
+                    path: socketPath,
+                    transports: ['polling', 'websocket'],
+                    reconnection: false,
+                    timeout: 10000,
+                    query: {
+                        platform: 'browser-test',
+                        timestamp: Date.now()
+                    }
+                });
+
+                // Connection successful
+                socket.on('connect', () => {
+                    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+                    addLog(`✅ Socket connected successfully!`, 'success');
+                    addLog(`Socket ID: ${socket.id}`, 'success');
+                    addLog(`Transport: ${socket.io.engine.transport.name}`, 'success');
+                    addLog(`Connection time: ${duration}s`, 'success');
+                    
+                    updateStatus(`✅ Connected! Socket ID: ${socket.id}`, 'connected');
+                    updateStats(true, socket.id);
+                    
+                    testBtn.disabled = false;
+                    testBtn.textContent = '🚀 Test Socket Connection';
+                });
+
+                // Connection error
+                socket.on('connect_error', (error) => {
+                    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+                    addLog(`❌ Connection failed!`, 'error');
+                    addLog(`Error: ${error.message}`, 'error');
+                    addLog(`Type: ${error.type || 'Unknown'}`, 'error');
+                    addLog(`Duration: ${duration}s`, 'error');
+                    
+                    updateStatus(`❌ Connection Failed: ${error.message}`, 'error');
+                    updateStats(false, null);
+                    
+                    testBtn.disabled = false;
+                    testBtn.textContent = '🚀 Test Socket Connection';
+                });
+
+                // Disconnect
+                socket.on('disconnect', (reason) => {
+                    addLog(`⚠️ Disconnected: ${reason}`, 'warning');
+                    updateStats(false, null);
+                });
+
+                // Error event
+                socket.on('error', (error) => {
+                    addLog(`❌ Socket error: ${error}`, 'error');
+                });
+
+                // Timeout handler
+                setTimeout(() => {
+                    if (!socket || !socket.connected) {
+                        addLog(`⏱️ Connection timeout after 10 seconds`, 'error');
+                        updateStatus('❌ Connection Timeout', 'error');
+                        updateStats(false, null);
+                        
+                        if (socket) {
+                            socket.disconnect();
+                        }
+                        
+                        testBtn.disabled = false;
+                        testBtn.textContent = '🚀 Test Socket Connection';
+                    }
+                }, 10000);
+
+            } catch (error) {
+                addLog(`❌ Failed to create socket: ${error.message}`, 'error');
+                updateStatus(`❌ Error: ${error.message}`, 'error');
+                updateStats(false, null);
+                
+                testBtn.disabled = false;
+                testBtn.textContent = '🚀 Test Socket Connection';
+            }
+        }
+
+        // Allow Enter key to test
+        document.getElementById('socketUrl').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') testSocket();
+        });
+        document.getElementById('socketPath').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') testSocket();
+        });
+    </script>
+</body>
+</html>
+
+
