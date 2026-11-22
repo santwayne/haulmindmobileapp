@@ -172,6 +172,8 @@ export default function DashboardScreen() {
         { id: 5, name: "ELD Documents", icon: <Ionicons name="document-text"   size={26} color="#fff" />, color: "#8B5CF6", route: "ELDDocuments" },
         { id: 6, name: "Mileage Sheet", icon: <Ionicons name="speedometer"     size={26} color="#fff" />, color: "#FF6B35", route: "MileageSheet" },
         { id: 7, name: "Call Dispatch", icon: <Ionicons name="call"            size={26} color="#fff" />, color: "#16a34a", onPress: handleCallDispatch },
+        // Driver training was only reachable from onboarding; drivers need it after onboarding too
+        { id: 8, name: "Driver Training", icon: <Ionicons name="school"       size={26} color="#fff" />, color: "#F59E0B", route: "TrainingScreen" },
     ];
 
     useEffect(() => {

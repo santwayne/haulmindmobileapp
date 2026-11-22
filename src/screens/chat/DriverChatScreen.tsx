@@ -379,10 +379,28 @@ const {
         // Send via socket for real-time
         // The backend will emit the message back via socket, which will be caught by handleNewMessage
         // The real message will replace the optimistic one
-        socketService.sendDriverChatMessage({
-          driverId,
-          message: messageText,
-        });
+        if (socketService.canSendLive()) {
+          socketService.sendDriverChatMessage({
+            driverId,
+            message: messageText,
+          });
+        } else {
+          // Live connection down: the socket send used to drop the message silently.
+          // The HTTP endpoint saves it and notifies dispatch.
+          const response = await chatService.sendDriverChatMessage(driverId, messageText);
+          const tempId = optimisticMessage._id;
+          if (response?.success && response.data) {
+            const saved = normalizeMessage(response.data);
+            setMessages((prev) => {
+              const withoutTemp = prev.filter((m) => m._id !== tempId);
+              return withoutTemp.some((m) => m._id === saved._id) ? withoutTemp : [...withoutTemp, saved];
+            });
+          } else {
+            setMessages((prev) => prev.filter((m) => m._id !== tempId));
+            setNewMessage(messageText);
+            Alert.alert('Message not sent', response?.message || 'Please check your connection and try again.');
+          }
+        }
       }
     } catch (error: any) {
       logger.error('Error sending driver chat message', error);
