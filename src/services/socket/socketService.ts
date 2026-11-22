@@ -630,6 +630,11 @@ class SocketService {
     this.socket.emit('leaveDriverChat', driverId);
   }
 
+  /** True when the live connection is up and messages can go over the socket */
+  canSendLive(): boolean {
+    return !!this.socket && this.isConnected;
+  }
+
   // Send driver chat message
   sendDriverChatMessage(data: {
     driverId: string;
